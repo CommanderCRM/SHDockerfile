@@ -17,6 +17,7 @@ if [[ "$response" =~ ^([cC])$ ]]
 then
 	echo "Продолжаем"
 else
+	echo usrdenied >&2
 	exit 0
 fi
 echo "Введите файл для проверки его существования в текущей директории"
@@ -31,9 +32,11 @@ do
 	elif find -- "$PWD" -prune -type d -empty | grep -q '^'
 	then
 		echo "Директория $PWD пуста, выходим"
+		echo dirempty >&2
 		exit 0
 	else
 		echo "Не существует, введите повторно"
+		echo filenf >&2
 	fi
 done
 echo "Продолжить или выйти [C/E]?"
@@ -42,6 +45,7 @@ if [[ "$response" =~ ^([cC])$ ]]
 then
         echo "Продолжаем"
 else
+		echo usrdenied >&2
         exit 0
 fi
 datecorrect=0
@@ -55,6 +59,7 @@ do
 		((datecorrect++))
 	else
 		echo "Введите дату повторно, дата $date некорректна"
+		echo incdate >&2
 	fi
 done
 echo "Продолжить или выйти [C/E]?"
@@ -63,6 +68,7 @@ if [[ "$response" =~ ^([cC])$ ]]
 then
         echo "Продолжаем"
 else
+		echo usrdenied >&2
         exit 0
 fi
 echo "Проверяем, был ли доступ к файлу $file после даты $date"
@@ -73,4 +79,6 @@ then
 	echo "Файл $file открывали после даты $date"
 else
 	echo "Файл $file не открывали после даты $date"
+	echo fileno >&2
+	exit 120
 fi
